@@ -10,45 +10,50 @@ pipeline {
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
     }
 
-   agent any
+    agent any
+
     stages {
-        stage('checkout') {
+        stage('Checkout') {
             steps {
-                 script{
-                        dir("terraform") {
-                            git "https://github.com/yeshwanthlm/Terraform-Jenkins.git"
-                        }
-                    }
+                script {
+                    git "https://github.com/yeshwanthlm/Terraform-Jenkins.git"
                 }
             }
+        }
 
         stage('Plan') {
             steps {
-                sh 'pwd;cd terraform/ ; terraform init'
-                sh "pwd;cd terraform/ ; terraform plan -out tfplan -var='region=${params.region}' -var='ami=${params.ami}' -var='instance_type=${params.instance_type}'"
-                sh 'pwd;cd terraform/ ; terraform show -no-color tfplan > tfplan.txt'
+                script {
+                    sh """
+                    cd terraform/
+                    terraform init
+                    terraform plan -out tfplan -var='region=${params.region}' -var='ami=${params.ami}' -var='instance_type=${params.instance_type}'
+                    terraform show -no-color tfplan > tfplan.txt
+                    """
+                }
             }
         }
-        stage('Approval') {
-           when {
-               not {
-                   equals expected: true, actual: params.autoApprove
-               }
-           }
 
-           steps {
-               script {
+        stage('Approval') {
+            when {
+                not {
+                    equals expected: true, actual: params.autoApprove
+                }
+            }
+
+            steps {
+                script {
                     def plan = readFile 'terraform/tfplan.txt'
                     input message: "Do you want to apply the plan?",
                     parameters: [text(name: 'Plan', description: 'Please review the plan', defaultValue: plan)]
-               }
-           }
-       }
+                }
+            }
+        }
 
         stage('Apply') {
             steps {
                 script {
-                    sh "pwd;cd terraform/ ; terraform apply -input=false ${params.autoApprove ? '-auto-approve' : ''} tfplan"
+                    sh "cd terraform/ && terraform apply -input=false ${params.autoApprove ? '-auto-approve' : ''} tfplan"
                 }
             }
         }
