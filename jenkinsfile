@@ -1,8 +1,8 @@
 pipeline {
     parameters {
-        string(name: 'region', defaultValue: 'us-east-1', description: 'AWS region')
-        string(name: 'ami', defaultValue: 'ami-05fa00d4c63e32376', description: 'AMI ID')
-        string(name: 'instance_type', defaultValue: 't2.micro', description: 'EC2 instance type')
+        choice(name: 'region', defaultValue: 'us-east-1', description: 'AWS region')
+        choice(name: 'ami', defaultValue: 'ami-05fa00d4c63e32376', description: 'AMI ID')
+        choice(name: 'instance_type', defaultValue: 't2.micro', description: 'EC2 instance type')
         booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply after generating plan?')
     } 
     environment {
