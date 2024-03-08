@@ -25,7 +25,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                    terraform init terraform/
+                    terraform init -chdir=terraform/
                     terraform plan -out=tfplan -var="region=${params.region}" -var="ami=${params.ami}" -var="instance_type=${params.instance_type}" terraform/
                     terraform show -no-color terraform/tfplan > terraform/tfplan.txt
                     """
