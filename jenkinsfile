@@ -16,7 +16,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    git "https://github.com/yeshwanthlm/Terraform-Jenkins.git"
+                    git "https://github.com/srikumartdba/terraform-jenkins.git"
                 }
             }
         }
