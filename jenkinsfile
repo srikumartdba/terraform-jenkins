@@ -17,7 +17,6 @@ pipeline {
             steps {
                 script {
                     git "https://github.com/srikumartdba/terraform-jenkins.git"
-                    
                 }
             }
         }
@@ -26,10 +25,9 @@ pipeline {
             steps {
                 script {
                     sh """
-                    
-                    terraform init
-                    terraform plan -out=tfplan -var="region=${params.region}" -var="ami=${params.ami}" -var="instance_type=${params.instance_type}"
-                    terraform show -no-color tfplan > tfplan.txt
+                    terraform init terraform/
+                    terraform plan -out=tfplan -var="region=${params.region}" -var="ami=${params.ami}" -var="instance_type=${params.instance_type}" terraform/
+                    terraform show -no-color terraform/tfplan > terraform/tfplan.txt
                     """
                 }
             }
