@@ -53,10 +53,10 @@ pipeline {
 
         stage('Apply') {
             steps {
-                dir('terraform/') {
+                
                     script {
                         sh "terraform apply -input=false ${params.autoApprove ? '-auto-approve' : ''} tfplan"
-                    }
+                
                 }
             }
         }
